@@ -34,6 +34,8 @@ def jsonSave(request):
     conn.close()
     return render(request, "MatApp/home.html")
 
+def foooo():
+    return
 
 def saveInDB(text):
      conn = connDB()
