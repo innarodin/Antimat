@@ -1,0 +1,10 @@
+.main-content
+{
+    margin-top: 80px;
+}
+
+.checked-text
+{
+    overflow-y: scroll;
+    height: 400px;
+}

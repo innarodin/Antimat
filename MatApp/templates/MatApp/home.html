@@ -1,42 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-      <meta charset="utf-8">
-      <title>Mat App</title>
-  </head>
+{% extends 'MatApp/base.html' %}
 
-  <body>
-  <form action="/check" method="post">
-      {% csrf_token %}
-    <p><b>Введите ваш текст:</b></p>
-    <p><textarea rows="10" cols="45" name="text">
+{% block title %}
+Mat App
+{% endblock %}
 
+{% block content %}
 
-    </textarea></p>
-    <p><input type="submit" value="Отправить"></p>
-  </form>
-<p><b>Проверенный текст:</b></p>
-{{ text }}
+    <div class="container">
+        <div class="row" id="textToCheck">
+            <div class="col-md-10 col-md-offset-1">
+                <form action="/check" method="post">
+                  {% csrf_token %}
+                    <p><b>Введите ваш текст:</b></p>
+                    <p><textarea class="form-control" rows="10" cols="45" name="text"></textarea></p>
+                    <div class="row">
+                        <p class="col-md-12"><input class="col-md-6 col-md-offset-6 btn btn-success"type="submit" value="Проверить"></p>
+                    </div>
 
-     <br>
-     <br>
-     <br>
-     <br>
+                </form>
+            </div>
+        </div>
+        <div class="row" id="checkedText">
+            <div class="col-md-10 col-md-offset-1" >
+                <p><b>Проверенный текст:</b></p>
+                <p><div class="form-control checked-text">{{ text |safe }}</div></p>
+            </div>
+        </div>
+    </div>
 
-  <form action="/addWord" method="post">
-      {% csrf_token %}
-     <p><b>Введите слово для добавления:</b></p>
-     <p><input type="text" name = "word"></p>
-     <p><input type="submit" value="Добавить"></p>
-      <p><b>Добавлено слово:</b></p>
-{{ newWord }}
-  </form>
-
-    <br>
-     <br>
-
-  <form action="/addDict" >
-     <p><input type="submit" value="Добавить словарь"></p>
-  </form>
-  </body>
-</html>
+{% endblock %}

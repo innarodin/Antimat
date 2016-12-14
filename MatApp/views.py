@@ -60,3 +60,6 @@ def addWord(request):
         return render(request, "MatApp/home.html", context)
     else:
         return HttpResponse('Error')
+
+def addingWord(request):
+    return render(request, 'MatApp/addingWord.html')
