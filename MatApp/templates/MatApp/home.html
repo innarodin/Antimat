@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="utf-8">
+      <title>Mat App</title>
+  </head>
+
+  <body>
+  <form action="/check" method="post">
+      {% csrf_token %}
+    <p><b>Введите ваш текст:</b></p>
+    <p><textarea rows="10" cols="45" name="text">
+
+
+    </textarea></p>
+    <p><input type="submit" value="Отправить"></p>
+  </form>
+<p><b>Проверенный текст:</b></p>
+{{ text }}
+
+     <br>
+     <br>
+     <br>
+     <br>
+
+  <form action="/addWord" method="post">
+      {% csrf_token %}
+     <p><b>Введите слово для добавления:</b></p>
+     <p><input type="text" name = "word"></p>
+     <p><input type="submit" value="Добавить"></p>
+      <p><b>Добавлено слово:</b></p>
+{{ newWord }}
+  </form>
+
+    <br>
+     <br>
+
+  <form action="/addDict" >
+     <p><input type="submit" value="Добавить словарь"></p>
+  </form>
+  </body>
+</html>
