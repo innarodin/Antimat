@@ -1,4 +1,6 @@
 import sqlite3
+
+import sys
 from django.core.serializers import json
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -7,59 +9,71 @@ import json
 
 from djantimat.models import Slang
 
-def home(request):
-    return render(request, 'MatApp/home.html')
+class CheckMat:
+    @staticmethod
+    def home(request):
+        return render(request, 'MatApp/home.html')
+
+    @staticmethod
+    def check(request):
+        try:
+            if request.method == "POST":
+                inputText = request.POST['text']
+                context = {
+                    'text': PymorphyProc.wrap(inputText)
+                }
+                return render(request, "MatApp/home.html", context)
+        except:
+            return HttpResponse('Ошибка проверки')
 
 
-def check(request):
-    if request.method == "POST":
-        inputText = request.POST['text']
-        context = {
-            'text': PymorphyProc.wrap(inputText)
-        }
-        return render(request, "MatApp/home.html", context)
-    else:
-        return HttpResponse('Error')
+class AddNewWords:
+    @staticmethod
+    def jsonSave(request):
+        with open('F:\\Users\\Admin\\Desktop\\file.json', encoding='utf-8') as data_file:
+            data = json.loads(data_file.read())
+        #data = json.loads('[{ "word": "\u0430\u0431\u043e\u0440\u0442\u043c\u0430\u0445\u0435\u0440", "pk": 1},{ "word": "\u0430\u043d\u0430\u043b", "pk": 2}]')
+        i = 0
+        while data[i + 1] != None:
+            text = data[i]['word']
+            AddNewWords().saveInDB(text)
+            i = i + 1
+        conn.close()
+        return render(request, "MatApp/home.html")
+
+    @staticmethod
+    def saveInDB(text):
+      #  try:
+             conn = AddNewWords().connDB()
+             c = conn.cursor()
+             c.execute('INSERT INTO djantimat_slang (word) VALUES (?)', (text,))
+             conn.commit()
+             conn.close()
+      #  except:
+      #      return HttpResponse('Слово уже есть в базе')
 
 
-def jsonSave(request):
-    with open('F:\\Users\\Admin\\Desktop\\file.json', encoding='utf-8') as data_file:
-        data = json.loads(data_file.read())
-    #data = json.loads('[{ "word": "\u0430\u0431\u043e\u0440\u0442\u043c\u0430\u0445\u0435\u0440", "pk": 1},{ "word": "\u0430\u043d\u0430\u043b", "pk": 2}]')
-    i = 0
-    while i < 3980:
-        text = data[i]['word']
-        saveInDB(text)
-        i = i + 1
-    conn.close()
-    return render(request, "MatApp/home.html")
+    @staticmethod
+    def connDB():
+        try:
+            conn = sqlite3.connect('db.sqlite3')
+            return conn
+        except ConnectionError:
+            return HttpResponse('Ошибка подключения к базе')
 
-def foooo():
-    return
+    @staticmethod
+    def addWord(request):
+        try:
+            if request.method == "POST":
+                inputText = request.POST['word']
+                AddNewWords().saveInDB(inputText)
+                context = {
+                    'newWord': inputText
+                }
+                return render(request, "MatApp/addingWord.html", context)
+        except:
+            return HttpResponse('Слово уже есть в базе')
 
-def saveInDB(text):
-     conn = connDB()
-     c = conn.cursor()
-     c.execute('INSERT INTO djantimat_slang (word) VALUES (?)', (text,))
-     conn.commit()
-     conn.close()
-
-
-def connDB():
-    conn = sqlite3.connect('db.sqlite3')
-    return conn
-
-
-def addWord(request):
-    if request.method == "POST":
-        inputText = request.POST['word']
-        saveInDB(inputText)
-        context = {
-            'newWord': inputText
-        }
-        return render(request, "MatApp/home.html", context)
-    else:
-        return HttpResponse('Error')
-
-def addingWord(request):
-    return render(request, 'MatApp/addingWord.html')
+    @staticmethod
+    def addingWord(request):
+        return render(request, 'MatApp/addingWord.html')
