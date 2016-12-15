@@ -8,7 +8,7 @@ Add Word
 
     <div class="container">
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-6">
 
                 <form class="form-inline"  action="/addWord" method="post">
                   {% csrf_token %}
@@ -20,14 +20,52 @@ Add Word
                     {{ newWord }}
                 </form>
             </div>
+
+            {# тест кнопки #}
+            <div class="col-md-6">
+                <div class="form-inline">
+                    <p><b>Введите тестовое слово для добавления:</b></p>
+                    <div class="form-group"><input class="form-control" type="text" id="testWord"></div>
+                    <div class="form-group"><button class="btn btn-default" onclick="testFuncAjax()">Прочекать</button></div>
+
+                </div>
+                <div id="addedTestWordArea" style="display: none">
+                    <b>Добавлено слово:</b>
+                    <div id="addedTestWord"></div>
+                </div>
+            </div>
         </div>
         <div class="row" style="margin-top: 80px; display: none">
-            <div class="col-md-8">
+            <div class="col-md-6">
                 <form action="/addDict" >
                      <p><input type="submit" value="Добавить словарь"></p>
                 </form>
             </div>
         </div>
     </div>
+<script>
+function testFuncAjax(){
+    console.log("вызвалась testFuncAjax()");
+    var url = '{% url "testFunc" %}';
+    var data = {
+        testWord : $("#testWord").val(),
+        csrfmiddlewaretoken: "{{ csrf_token }}"
+    }
+    $.post(url, data).done(function (data) {
+        $("#addedTestWord").html(data);
+        $("#addedTestWordArea").attr("style", "display: block");
 
+    });
+{#    $.ajax({#}
+{#        url:  '{% url 'testFunc' %}',#}
+{#        type: "POST",#}
+{#        data: { keyy : "oooppooo",#}
+{#                csrfmiddlewaretoken: "{{ csrf_token }}"#}
+{#        },#}
+{#        success: function(data){#}
+{#            console.log(data);#}
+{#        }#}
+{#    })#}
+}
+</script>
 {% endblock %}

@@ -7,4 +7,5 @@ urlpatterns = [
     url(r'^addWord', views.AddNewWords.addWord, name='addWord'),
     url(r'^addDict', views.AddNewWords.jsonSave, name='addDict'),
     url(r'^addingWord', views.AddNewWords.addingWord, name='addingWord'),
+    url(r'^testFunc$', views.TestClass.testFunc, name='testFunc'),
 ]

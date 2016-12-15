@@ -26,6 +26,15 @@ class CheckMat:
         except:
             return HttpResponse('Ошибка проверки')
 
+class TestClass:
+    @staticmethod
+    def testFunc(request):
+        try:
+            if request.method == "POST" and request.is_ajax():
+                postdata = request.POST["testWord"]
+            return HttpResponse(postdata)
+        except:
+            return HttpResponse("mistake")
 
 class AddNewWords:
     @staticmethod
