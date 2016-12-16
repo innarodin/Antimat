@@ -26,6 +26,18 @@ class CheckMat:
         except:
             return HttpResponse('Ошибка проверки')
 
+    @staticmethod
+    def check1(request):
+        try:
+            if request.method == "POST" and request.is_ajax():
+                inputText = request.POST['text']
+                context = {
+                    "text" : PymorphyProc.wrap(inputText)
+                }
+                return HttpResponse(json.dumps(context))
+        except:
+            return HttpResponse('Ошибка проверки')
+
 class TestClass:
     @staticmethod
     def testFunc(request):
