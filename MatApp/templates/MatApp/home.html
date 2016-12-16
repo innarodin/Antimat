@@ -7,25 +7,80 @@ Mat App
 {% block content %}
 
     <div class="container">
-        <div class="row" id="textToCheck">
+        <div class="row" id="forTextToCheck">
             <div class="col-md-10 col-md-offset-1">
-                <form action="/check" method="post">
-                  {% csrf_token %}
-                    <p><b>Введите ваш текст:</b></p>
-                    <p><textarea class="form-control" rows="10" cols="45" name="text"></textarea></p>
+{#                <form action="/check" method="post">#}
+{#                  {% csrf_token %}#}
+{#                    <p><b>Введите ваш текст:</b></p>#}
+{#                    <p><textarea class="form-control" rows="10" cols="45" name="text"></textarea></p>#}
+{#                    <div class="row">#}
+{#                        <p class="col-md-12"><input class="col-md-6 col-md-offset-6 btn btn-success"type="submit" value="Проверить"></p>#}
+{#                    </div>#}
+{##}
+{#                </form>#}
+                <div>
                     <div class="row">
-                        <p class="col-md-12"><input class="col-md-6 col-md-offset-6 btn btn-success"type="submit" value="Проверить"></p>
+                        <p class="col-md-12">
+                            <div class="col-md-4"><b>Введите ваш текст:</b></div>
+                            <button class="col-md-4 btn btn-default" onclick="cleanAreaForCheckText()">Очистить текст на проверку</button>
+                        </p>
+                    </div>
+                    <p><div><textarea class="form-control" rows="10" cols="45" id="textToCheckArea"></textarea></div></p>
+                    <div class="row">
+                        <p class="col-md-12">
+                            <button class="col-md-6 col-md-offset-6 btn btn-success" onclick="checkText()">Проверить</button>
+                        </p>
                     </div>
 
-                </form>
+                </div>
             </div>
         </div>
-        <div class="row" id="checkedText">
+{#        <div class="row" id="checkedText">#}
+{#            <div class="col-md-10 col-md-offset-1" >#}
+{#                <p><b>Проверенный текст:</b></p>#}
+{#                <p><div class="form-control checked-text">{{ text |safe }}</div></p>#}
+{#            </div>#}
+{#        </div>#}
+        <div class="row" id="forCheckedText" style="display:none">
             <div class="col-md-10 col-md-offset-1" >
-                <p><b>Проверенный текст:</b></p>
-                <p><div class="form-control checked-text">{{ text |safe }}</div></p>
+                <div class="row">
+                        <p class="col-md-12">
+                            <div class="col-md-4"><b>Проверенный текст:</b></div>
+                            <button class="col-md-4 btn btn-default "
+                                    onclick="cleanAreaForCheckedText()">Очистить проверенный текст
+                            </button>
+                        </p>
+                </div>
+                <p><div class="form-control checked-text" id="checkedText"></div></p>
             </div>
         </div>
+
     </div>
+
+
+
+{#  own scripts#}
+  <script>
+    function checkText(){
+{#        console.log($("#textToCheckArea").val());#}
+        var url = '{% url "check1" %}';
+        var data = {
+            text: $("#textToCheckArea").val(),
+            csrfmiddlewaretoken: "{{ csrf_token }}"
+        }
+        $.post(url, data, function (data) {
+{#            console.log(data);#}
+            $("#checkedText").html(data.text.replace(/\r?\n/g,'<br/>'));
+            $("#forCheckedText").attr("style", "display: block");
+        },"json");
+    }
+  function cleanAreaForCheckText() {
+      $("#textToCheckArea").val("");
+  }
+  function cleanAreaForCheckedText() {
+      $("#forCheckedText").attr("style", "display: none");
+      $("#checkedText").html("");
+  }
+</script>
 
 {% endblock %}
