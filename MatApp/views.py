@@ -1,13 +1,36 @@
 import sqlite3
 
-import sys
 from django.core.serializers import json
 from django.http import HttpResponse
 from django.shortcuts import render
 from djantimat.helpers import PymorphyProc
 import json
 
-from djantimat.models import Slang
+class DBConnection: #singleton
+    instance = None
+    connection = None
+   # cursor = None
+
+    def __new__(cls):
+        print('in new')
+        if DBConnection.instance is None:
+            DBConnection.instance = object.__new__(cls)
+        return DBConnection.instance
+
+    def __init__(self):
+        print('in init')
+        if self.connection is None:
+            try:
+                self.connection = sqlite3.connect('db.sqlite3')
+                print('Database connection opened.')
+            except sqlite3.DatabaseError as db_error:
+                print("Error :\n{0}".format(db_error))
+
+    def __del__(self):
+        if self.connection is not None:
+            self.connection.close()
+            print('Database connection closed.')
+
 
 class CheckMat:
     @staticmethod
@@ -48,7 +71,9 @@ class TestClass:
         except:
             return HttpResponse("mistake")
 
+
 class AddNewWords:
+
     @staticmethod
     def jsonSave(request):
         with open('F:\\Users\\Admin\\Desktop\\file.json', encoding='utf-8') as data_file:
@@ -57,43 +82,40 @@ class AddNewWords:
         i = 0
         while data[i + 1] != None:
             text = data[i]['word']
-            AddNewWords().saveInDB(text)
+            AddNewWords.saveInDB(text)
             i = i + 1
-        conn.close()
+      #  conn.close()
         return render(request, "MatApp/home.html")
 
     @staticmethod
-    def saveInDB(text):
-      #  try:
-             conn = AddNewWords().connDB()
-             c = conn.cursor()
-             c.execute('INSERT INTO djantimat_slang (word) VALUES (?)', (text,))
-             conn.commit()
-             conn.close()
-      #  except:
-      #      return HttpResponse('Слово уже есть в базе')
+    def saveInDB(text): #я хз почему не работает
+        print('In save')
+        conn = DBConnection()
+        print(conn)
 
+        print("before cursor")
+        cursor = conn.connection.cursor()
+        print("after cursor")
 
-    @staticmethod
-    def connDB():
-        try:
-            conn = sqlite3.connect('db.sqlite3')
-            return conn
-        except ConnectionError:
-            return HttpResponse('Ошибка подключения к базе')
+        cursor.execute('INSERT INTO djantimat_slang (word) VALUES (?)', (text,))
+        print("after insert")
+
+        conn.connection.commit()
+        print("after commit")
 
     @staticmethod
     def addWord(request):
         try:
             if request.method == "POST":
                 inputText = request.POST['word']
-                AddNewWords().saveInDB(inputText)
+                AddNewWords.saveInDB(inputText)
                 context = {
                     'newWord': inputText
                 }
                 return render(request, "MatApp/addingWord.html", context)
         except:
             return HttpResponse('Слово уже есть в базе')
+
 
     @staticmethod
     def addingWord(request):
