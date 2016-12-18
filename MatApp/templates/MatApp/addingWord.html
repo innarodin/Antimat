@@ -21,17 +21,16 @@ Add Word
                 </form>
             </div>
 
-            {# тест кнопки #}
             <div class="col-md-6">
                 <div class="form-inline">
-                    <p><b>Введите тестовое слово для добавления:</b></p>
-                    <div class="form-group"><input class="form-control" type="text" id="testWord"></div>
-                    <div class="form-group"><button class="btn btn-default" onclick="testFuncAjax()">Прочекать</button></div>
+                    <p><b>Введите слово для добавления (пока не работает, хз почему: функция не сервере срабатывает, а ajax не доорабатывает до конца):</b></p>
+                    <div class="form-group"><input class="form-control" type="text" id="newWordInput"></div>
+                    <div class="form-group"><button class="btn btn-default" onclick="addNewWord()">Добавить</button></div>
 
                 </div>
-                <div id="addedTestWordArea" style="display: none">
+                <div id="addedWordArea" style="display: none">
                     <b>Добавлено слово:</b>
-                    <div id="addedTestWord"></div>
+                    <div id="addedWord"></div>
                 </div>
             </div>
         </div>
@@ -43,29 +42,59 @@ Add Word
             </div>
         </div>
     </div>
-<script>
-function testFuncAjax(){
-    console.log("вызвалась testFuncAjax()");
-    var url = '{% url "testFunc" %}';
-    var data = {
-        testWord : $("#testWord").val(),
-        csrfmiddlewaretoken: "{{ csrf_token }}"
-    }
-    $.post(url, data).done(function (data) {
-        $("#addedTestWord").html(data);
-        $("#addedTestWordArea").attr("style", "display: block");
 
-    });
-{#    $.ajax({#}
-{#        url:  '{% url 'testFunc' %}',#}
-{#        type: "POST",#}
-{#        data: { keyy : "oooppooo",#}
-{#                csrfmiddlewaretoken: "{{ csrf_token }}"#}
-{#        },#}
-{#        success: function(data){#}
-{#            console.log(data);#}
-{#        }#}
-{#    })#}
-}
+<script>
+    function addNewWord(){
+        var url = '{% url "addWordForAjax" %}';
+        var data = {
+            word : $("#newWordInput").val(),
+            csrfmiddlewaretoken: "{{ csrf_token }}"
+        };
+        $.post(url, data, function (data) {
+            console.log("i am here");
+            console.log(data);
+    {#        if (data.isError == "false") {#}
+    {#                $("#addedWord").html(data.newWord);#}
+    {#                $("#addedWordArea").attr("style", "display: block");#}
+    {#            } else {#}
+    {#                console.log(data);#}
+    {#                $("#addedWord").html("<h4 class=\"alert alert-danger\">"+data.errorMsg + "!</h4>");#}
+    {#                $("#addedWordArea").attr("style", "display: block");#}
+    {#            }#}
+        }, "json");
+    {#    $.post(url, data, function (data) {#}
+    {#        console.log(data);#}
+    {#            if (data.isError == "false") {#}
+    {#                $("#addedWord").html(data.newWord);#}
+    {#                $("#addedWordArea").attr("style", "display: block");#}
+    {#            } else {#}
+    {#                console.log(data);#}
+    {#                $("#addedWord").html("<h4 class=\"alert alert-danger\">"+data.errorMsg + "!</h4>");#}
+    {#                $("#addedWordArea").attr("style", "display: block");#}
+    {#            }#}
+    {#        },"json");#}
+    {#    $.post(url, data, function (data) {#}
+    {#            console.log(data);#}
+    {#            $("#loadingTextBlock").attr("style", "display: none");#}
+    {#            if (data.isError == "false") {#}
+    {#                $("#checkedText").html(data.text.replace(/\r?\n/g, '<br/>'));#}
+    {#                $("#forCheckedText").attr("style", "display: block");#}
+    {#            }#}
+    {#            else {#}
+    {#                console.log(data);#}
+    {#                $("#checkedText").html("<h3 class=\"alert alert-danger\">"+data.errorMsg + "!</h3>");#}
+    {#                $("#forCheckedText").attr("style", "display: block");#}
+    {#            }#}
+    {#        },"json");#}
+    {#        $.ajax({#}
+    {#            url:  url,#}
+    {#            type: "POST",#}
+    {#            data: data,#}
+    {#            success: function(data1){#}
+    {#                console.log("hahaah");#}
+    {#                console.log(data1);#}
+    {#                }#}
+    {#        });#}
+    }
 </script>
 {% endblock %}
