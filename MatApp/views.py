@@ -25,27 +25,17 @@ class CheckMat:
             return HttpResponse('Ошибка проверки')
 
     @staticmethod
-    def check1(request):
+    def checkForAjax(request):
         try:
             if request.method == "POST" and request.is_ajax():
                 inputText = request.POST['text']
                 context = {
-                    "text" : PymorphyProc.wrap(inputText)
+                    'text': PymorphyProc.wrap(inputText),
+                    "isError": "false"
                 }
                 return HttpResponse(json.dumps(context))
         except:
-            return HttpResponse('Ошибка проверки')
-
-class TestClass:
-    @staticmethod
-    def testFunc(request):
-        try:
-            if request.method == "POST" and request.is_ajax():
-                postdata = request.POST["testWord"]
-            return HttpResponse(postdata)
-        except:
-            return HttpResponse("mistake")
-
+            return HttpResponse(json.dumps({"isError": "true", "errorMsg":'Ошибка проверки'}))
 
 class AddNewWords:
 
@@ -79,6 +69,24 @@ class AddNewWords:
                 return render(request, "MatApp/addingWord.html", context)
         except:
             return HttpResponse('Слово уже есть в базе')
+
+    @staticmethod
+    def addWordForAjax(request):
+        # print("before try")
+        try:
+            # print("before if")
+            if request.method == "POST" and request.is_ajax():
+                inputText = request.POST['word']
+                # print(inputText)
+                AddNewWords.saveInDB(inputText)
+                context = {
+                    "isError" : "false",
+                    'newWord': inputText
+                }
+                # print(context)
+                return HttpResponse(json.dumps(context))
+        except:
+            return HttpResponse(json.dumps({"isError" : "true","errorMsg": 'Ошибка выполнения: Слово уже есть в базе'}))
 
 
     @staticmethod
