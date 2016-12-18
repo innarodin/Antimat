@@ -1,4 +1,6 @@
 {% extends 'MatApp/base.html' %}
+{% load staticfiles %}
+
 
 {% block title %}
 Mat App
@@ -41,6 +43,14 @@ Mat App
 {#                <p><div class="form-control checked-text">{{ text |safe }}</div></p>#}
 {#            </div>#}
 {#        </div>#}
+{#        Блок отображения обработки тектса#}
+        <div class="row" style="display: none" id="loadingTextBlock">
+            <div class="col-md-4 col-md-offset-4">
+                <div id="loadText" style="text-align: center"><h3><p>Обработка текста ...</p><p>Пожалуйста, Подождите</p></h3></div>
+                <div id="loadGif" style="text-align: center"><img src="{% static 'MatApp/load.gif' %}"></div>
+            </div>
+        </div>
+
         <div class="row" id="forCheckedText" style="display:none">
             <div class="col-md-10 col-md-offset-1" >
                 <div class="row">
@@ -58,20 +68,29 @@ Mat App
     </div>
 
 
-
 {#  own scripts#}
   <script>
     function checkText(){
 {#        console.log($("#textToCheckArea").val());#}
-        var url = '{% url "check1" %}';
+        cleanAreaForCheckedText();
+        $("#loadingTextBlock").attr("style", "display: block");
+        var url = '{% url "checkForAjax" %}';
         var data = {
             text: $("#textToCheckArea").val(),
             csrfmiddlewaretoken: "{{ csrf_token }}"
-        }
+        };
         $.post(url, data, function (data) {
-{#            console.log(data);#}
-            $("#checkedText").html(data.text.replace(/\r?\n/g,'<br/>'));
-            $("#forCheckedText").attr("style", "display: block");
+           console.log(data);
+            $("#loadingTextBlock").attr("style", "display: none");
+            if (data.isError == "false") {
+                $("#checkedText").html(data.text.replace(/\r?\n/g, '<br/>'));
+                $("#forCheckedText").attr("style", "display: block");
+            }
+            else {
+                console.log(data);
+                $("#checkedText").html("<h3 class=\"alert alert-danger\">"+data.errorMsg + "!</h3>");
+                $("#forCheckedText").attr("style", "display: block");
+            }
         },"json");
     }
   function cleanAreaForCheckText() {
