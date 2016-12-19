@@ -8,22 +8,21 @@ Add Word
 
     <div class="container">
         <div class="row">
-            <div class="col-md-6">
-
-                <form class="form-inline"  action="/addWord" method="post">
-                  {% csrf_token %}
-                    <p><b>Введите слово для добавления:</b></p>
-                    <div class="form-group"><input class="form-control" type="text" name = "word"></div>
-                    <div class="form-group"><input class="btn btn-default" type="submit" value="Добавить"></div>
-
-                    <div id="addedWord" style="display: none"><b>Добавлено слово:</b></div>
-                    {{ newWord }}
-                </form>
-            </div>
-
+{#            <div class="col-md-6">#}
+{##}
+{#                <form class="form-inline"  action="/addWord" method="post">#}
+{#                  {% csrf_token %}#}
+{#                    <p><b>Введите слово для добавления:</b></p>#}
+{#                    <div class="form-group"><input class="form-control" type="text" name = "word"></div>#}
+{#                    <div class="form-group"><input class="btn btn-default" type="submit" value="Добавить"></div>#}
+{##}
+{#                    <div id="addedWord1" style="display: none"><b>Добавлено слово:</b></div>#}
+{#                    {{ newWord }}#}
+{#                </form>#}
+{#            </div>#}
             <div class="col-md-6">
                 <div class="form-inline">
-                    <p><b>Введите слово для добавления (пока не работает, хз почему: функция не сервере срабатывает, а ajax не доорабатывает до конца):</b></p>
+                    <p><b>Введите слово для добавления:</b></p>
                     <div class="form-group"><input class="form-control" type="text" id="newWordInput"></div>
                     <div class="form-group"><button class="btn btn-default" onclick="addNewWord()">Добавить</button></div>
 
@@ -34,13 +33,13 @@ Add Word
                 </div>
             </div>
         </div>
-        <div class="row" style="margin-top: 80px; display: none">
-            <div class="col-md-6">
-                <form action="/addDict" >
-                     <p><input type="submit" value="Добавить словарь"></p>
-                </form>
-            </div>
-        </div>
+{#        <div class="row" style="margin-top: 80px; display: none">#}
+{#            <div class="col-md-6">#}
+{#                <form action="/addDict" >#}
+{#                     <p><input type="submit" value="Добавить словарь"></p>#}
+{#                </form>#}
+{#            </div>#}
+{#        </div>#}
     </div>
 
 <script>
@@ -51,50 +50,14 @@ Add Word
             csrfmiddlewaretoken: "{{ csrf_token }}"
         };
         $.post(url, data, function (data) {
-            console.log("i am here");
-            console.log(data);
-    {#        if (data.isError == "false") {#}
-    {#                $("#addedWord").html(data.newWord);#}
-    {#                $("#addedWordArea").attr("style", "display: block");#}
-    {#            } else {#}
-    {#                console.log(data);#}
-    {#                $("#addedWord").html("<h4 class=\"alert alert-danger\">"+data.errorMsg + "!</h4>");#}
-    {#                $("#addedWordArea").attr("style", "display: block");#}
-    {#            }#}
+{#            console.log(data);#}
+            if (data.isError == "false") {
+                    $("#addedWord").html("<h4 class=\"alert alert-success\">"+data.newWord + "</h4>");
+            } else {
+                    $("#addedWord").html("<h4 class=\"alert alert-danger\">"+data.errorMsg + "!</h4>");
+            }
+            $("#addedWordArea").attr("style", "display: block");
         }, "json");
-    {#    $.post(url, data, function (data) {#}
-    {#        console.log(data);#}
-    {#            if (data.isError == "false") {#}
-    {#                $("#addedWord").html(data.newWord);#}
-    {#                $("#addedWordArea").attr("style", "display: block");#}
-    {#            } else {#}
-    {#                console.log(data);#}
-    {#                $("#addedWord").html("<h4 class=\"alert alert-danger\">"+data.errorMsg + "!</h4>");#}
-    {#                $("#addedWordArea").attr("style", "display: block");#}
-    {#            }#}
-    {#        },"json");#}
-    {#    $.post(url, data, function (data) {#}
-    {#            console.log(data);#}
-    {#            $("#loadingTextBlock").attr("style", "display: none");#}
-    {#            if (data.isError == "false") {#}
-    {#                $("#checkedText").html(data.text.replace(/\r?\n/g, '<br/>'));#}
-    {#                $("#forCheckedText").attr("style", "display: block");#}
-    {#            }#}
-    {#            else {#}
-    {#                console.log(data);#}
-    {#                $("#checkedText").html("<h3 class=\"alert alert-danger\">"+data.errorMsg + "!</h3>");#}
-    {#                $("#forCheckedText").attr("style", "display: block");#}
-    {#            }#}
-    {#        },"json");#}
-    {#        $.ajax({#}
-    {#            url:  url,#}
-    {#            type: "POST",#}
-    {#            data: data,#}
-    {#            success: function(data1){#}
-    {#                console.log("hahaah");#}
-    {#                console.log(data1);#}
-    {#                }#}
-    {#        });#}
     }
 </script>
 {% endblock %}

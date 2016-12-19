@@ -84,13 +84,13 @@ Mat App
             $("#loadingTextBlock").attr("style", "display: none");
             if (data.isError == "false") {
                 $("#checkedText").html(data.text.replace(/\r?\n/g, '<br/>'));
-                $("#forCheckedText").attr("style", "display: block");
             }
             else {
                 console.log(data);
-                $("#checkedText").html("<h3 class=\"alert alert-danger\">"+data.errorMsg + "!</h3>");
-                $("#forCheckedText").attr("style", "display: block");
+                $("#checkedText").html("<h4 class=\"alert alert-danger\">"+data.errorMsg + "!</h4>");
             }
+            $("#forCheckedText").attr("style", "display: block");
+
         },"json");
     }
   function cleanAreaForCheckText() {

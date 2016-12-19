@@ -68,22 +68,21 @@ class AddNewWords:
                 }
                 return render(request, "MatApp/addingWord.html", context)
         except:
-            return HttpResponse('Слово уже есть в базе')
+            context = {
+                'newWord': 'Ошибка выполнения: Слово уже есть в базе'
+            }
+            return render(request, "MatApp/addingWord.html", context)
 
     @staticmethod
     def addWordForAjax(request):
-        # print("before try")
         try:
-            # print("before if")
             if request.method == "POST" and request.is_ajax():
                 inputText = request.POST['word']
-                # print(inputText)
                 AddNewWords.saveInDB(inputText)
                 context = {
                     "isError" : "false",
                     'newWord': inputText
                 }
-                # print(context)
                 return HttpResponse(json.dumps(context))
         except:
             return HttpResponse(json.dumps({"isError" : "true","errorMsg": 'Ошибка выполнения: Слово уже есть в базе'}))
