@@ -56,22 +56,22 @@ class AddNewWords:
         b = Slang(word=text.lower())
         b.save()
 
-
-    @staticmethod
-    def addWord(request):
-        try:
-            if request.method == "POST":
-                inputText = request.POST['word']
-                AddNewWords.saveInDB(inputText)
-                context = {
-                    'newWord': inputText
-                }
-                return render(request, "MatApp/addingWord.html", context)
-        except:
-            context = {
-                'newWord': 'Ошибка выполнения: Слово уже есть в базе'
-            }
-            return render(request, "MatApp/addingWord.html", context)
+    #
+    # @staticmethod
+    # def addWord(request):
+    #     try:
+    #         if request.method == "POST":
+    #             inputText = request.POST['word']
+    #             AddNewWords.saveInDB(inputText)
+    #             context = {
+    #                 'newWord': inputText
+    #             }
+    #             return render(request, "MatApp/addingWord.html", context)
+    #     except:
+    #         context = {
+    #             'newWord': 'Ошибка выполнения: Слово уже есть в базе'
+    #         }
+    #         return render(request, "MatApp/addingWord.html", context)
 
     @staticmethod
     def addWordForAjax(request):
